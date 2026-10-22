@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head><meta charset="UTF-8"><title>دخول</title></head>
+<body style="font-family:Tahoma; display:flex; justify-content:center; align-items:center; height:100vh; background:#f4f4f4">
+    <form method="POST" style="background:white; padding:30px; border-radius:10px; width:300px">
+        <h2>دخول لوحة التحكم</h2>
+        {% if error %}<p style="color:red">{{ error }}</p>{% endif %}
+        <input type="text" name="username" placeholder="اسم المستخدم" required style="width:100%; padding:10px; margin:8px 0">
+        <input type="password" name="password" placeholder="كلمة المرور" required style="width:100%; padding:10px; margin:8px 0">
+        <button type="submit" style="width:100%; padding:10px; background:#007bff; color:white; border:none">دخول</button>
+    </form>
+</body>
+</html>

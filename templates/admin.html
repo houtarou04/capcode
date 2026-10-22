@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - CapCode</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Cairo', 'Tahoma'; background: var(--bg); color: var(--text); padding: 0; }
+       .header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 10; }
+       .header a { color: white; text-decoration: none; opacity: 0.9; transition: 0.3s; }
+       .header a:hover { opacity: 1; }
+       .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+       .tabs { display: flex; gap: 10px; margin-bottom: 25px; }
+       .tab-btn { padding: 12px 25px; border: none; background: var(--card); border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; border: 2px solid var(--border); font-family: 'Cairo'; }
+       .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+       .tab-content { display: none; }
+       .tab-content.active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from {opacity: 0; transform: translateY(10px);} to {opacity: 1; transform: translateY(0);} }
+       .card { background: var(--card); padding: 25px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; }
+       .card h2 { margin-bottom: 20px; font-size: 22px; color: var(--primary-dark); }
+       .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+       .form-full { grid-column: 1 / -1; }
+        input, textarea { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 10px; font-family: 'Cairo'; transition: 0.3s; }
+        input:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+        label { font-weight: 600; display: block; margin-bottom: 6px; font-size: 14px; }
+       .btn { background: var(--primary); color: white; padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 600; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; font-family: 'Cairo'; }
+       .btn:hover { background: var(--primary-dark); transform: translateY(-2px); }
+       .btn-danger { background: var(--danger); }
+       .btn-danger:hover { background: #dc2626; }
+       .btn-edit { background: var(--warning); color: black; }
+       .btn-edit:hover { background: #d97706; }
+       .btn-success { background: var(--success); }
+       .item-list { display: grid; gap: 12px; }
+       .item { background: var(--bg); padding: 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; border: 1px solid var(--border); }
+       .item:hover { transform: translateX(-5px); border-color: var(--primary); }
+       .item-info b { font-size: 17px; }
+       .item-info small { color: #64748b; }
+       .item-actions { display: flex; gap: 8px; }
+       .item-actions a { padding: 8px 14px; border-radius: 8px; color: white; text-decoration: none; font-size: 14px; font-weight: 600; }
+       .empty { text-align: center; padding: 40px; color: #94a3b8; }
+        @media (max-width: 768px) {.form-grid { grid-template-columns: 1fr; }.item { flex-direction: column; align-items: flex-start; gap: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 لوحة تحكم CapCode</h1>
+        <div>
+            <a href="/">← عرض الموقع</a> | <a href="/logout">تسجيل خروج</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('skills')">📊 المهارات</button>
+            <button class="tab-btn" onclick="openTab('projects')">💼 المشاريع</button>
+        </div>
+
+        <div id="skills" class="tab-content active">
+            <div class="card">
+                <h2>اضافة مهارة جديدة</h2>
+                <form action="/add-skill" method="POST" class="form-grid">
+                    <div><label>اسم المهارة</label><input type="text" name="name" placeholder="مثلا: Python" required></div>
+                    <div><label>المستوى %</label><input type="number" name="level" placeholder="90" min="0" max="100" required></div>
+                    <div class="form-full"><button type="submit" class="btn">+ اضافة مهارة</button></div>
+                </form>
+            </div>
+            <div class="card">
+                <h2>المهارات الموجودة ({{ skills|length }})</h2>
+                <div class="item-list">
+                {% for skill in skills %}
+                    <div class="item">
+                        <div class="item-info"><b>{{ skill.name }}</b><small>المستوى: {{ skill.level }}%</small></div>
+                        <div class="item-actions">
+                            <a href="/edit-skill/{{ skill.id }}" class="btn-edit">تعديل</a>
+                            <a href="/delete-skill/{{ skill.id }}" class="btn-danger" onclick="return confirm('متأكد من الحذف؟')">حذف</a>
+                        </div>
+                    </div>
+                {% else %}<div class="empty">لسه ما ضفت أي مهارة</div>{% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div id="projects" class="tab-content">
+            <div class="card">
+                <h2>اضافة مشروع جديد</h2>
+                <form action="/add-project" method="POST" enctype="multipart/form-data" class="form-grid">
+                    <div><label>عنوان المشروع</label><input type="text" name="title" required></div>
+                    <div><label>الوصف القصير</label><input type="text" name="short_desc" required></div>
+                    <div class="form-full"><label>الوصف الكامل</label><textarea name="full_desc" rows="4" required></textarea></div>
+                    <div><label>المهارات المستخدمة</label><input type="text" name="skills_used" placeholder="Flask, CSS, JS"></div>
+                    <div><label>سعر المشروع $</label><input type="number" name="price" step="0.01" placeholder="49.99" min="0"></div>
+                    <div><label>رابط Github</label><input type="text" name="github_link"></div>
+                    <div><label>رابط الموقع لايف</label><input type="text" name="live_link"></div>
+                    <div><label>صورة الديسكتوب</label><input type="file" name="img_d" accept="image/*" required></div>
+                    <div><label>صورة الموبايل</label><input type="file" name="img_m" accept="image/*" required></div>
+                    <div class="form-full"><button type="submit" class="btn btn-success">+ اضافة مشروع</button></div>
+                </form>
+            </div>
+            <div class="card">
+                <h2>المشاريع الموجودة ({{ projects|length }})</h2>
+                <div class="item-list">
+                {% for project in projects %}
+                    <div class="item">
+                        <div class="item-info">
+                            <b>{{ project.title }}</b>
+                            <small>{{ project.short_desc }} - ${{ "%.2f"|format(project.price) }}</small>
+                        </div>
+                        <div class="item-actions">
+                            <a href="/project/{{ project.id }}" target="_blank" style="background:var(--success)">عرض</a>
+                            <a href="/edit-project/{{ project.id }}" class="btn-edit">تعديل</a>
+                            <a href="/delete-project/{{ project.id }}" class="btn-danger" onclick="return confirm('متأكد من الحذف؟')">حذف</a>
+                        </div>
+                    </div>
+                {% else %}<div class="empty">لسه ما ضفت أي مشروع</div>{% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

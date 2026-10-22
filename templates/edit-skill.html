@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تعديل مهارة - CapCode</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body { font-family: 'Tahoma'; background: #f4f4f4; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
+        form { border: 1px solid #ddd; padding: 20px; border-radius: 8px; }
+        input { width: 95%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { background: #007bff; color: white; padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #0056b3; }
+        label { font-weight: bold; display: block; margin-top: 10px; }
+        a.back { text-decoration: none; color: #007bff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>تعديل مهارة</h1>
+        <a href="/admin" class="back">← العودة للوحة التحكم</a>
+        <form action="/edit-skill/{{ skill.id }}" method="POST">
+            <label>اسم المهارة</label>
+            <input type="text" name="name" value="{{ skill.name }}" required>
+            <label>المستوى %</label>
+            <input type="number" name="level" value="{{ skill.level }}" required>
+            <button type="submit">حفظ التعديل</button>
+        </form>
+    </div>
+</body>
+</html>
